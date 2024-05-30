@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.io
 from scipy.signal import resample
+from sklearn.preprocessing import StandardScaler
 
 
 
@@ -28,14 +29,20 @@ def get_data():
     array = np.array(array)
     motion_data = array.reshape((125374, 6, 3))
     
-
-
-
     # Resample ECoG data to match motion data frequency (120 Hz)
     n_samples = len(motion_time)
     ecog_data_resampled = resample(ecog_data, n_samples)
     ecog_time_resampled = np.linspace(ecog_time[0], ecog_time[-1], n_samples)
+    
+     # Normalize the ECoG data
+    scaler_ecog = StandardScaler()
+    ecog_data_resampled = scaler_ecog.fit_transform(ecog_data_resampled)
 
+    # Normalize the motion data
+    motion_data_flat = motion_data.reshape(-1, motion_data.shape[-1])
+    scaler_motion = StandardScaler()
+    motion_data_flat = scaler_motion.fit_transform(motion_data_flat)
+    motion_data = motion_data_flat.reshape(motion_data.shape)
     # Save the ECoG data
     np.save('ECoG_data.npy', ecog_data_resampled, allow_pickle=True)
 
