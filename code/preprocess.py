@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.io
 from scipy.signal import resample
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 
 
 
@@ -35,12 +35,12 @@ def get_data():
     ecog_time_resampled = np.linspace(ecog_time[0], ecog_time[-1], n_samples)
     
      # Normalize the ECoG data
-    scaler_ecog = StandardScaler()
+    scaler_ecog = MinMaxScaler()
     ecog_data_resampled = scaler_ecog.fit_transform(ecog_data_resampled)
 
     # Normalize the motion data
     motion_data_flat = motion_data.reshape(-1, motion_data.shape[-1])
-    scaler_motion = StandardScaler()
+    scaler_motion = MinMaxScaler()
     motion_data_flat = scaler_motion.fit_transform(motion_data_flat)
     motion_data = motion_data_flat.reshape(motion_data.shape)
     # Save the ECoG data
